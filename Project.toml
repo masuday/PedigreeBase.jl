@@ -1,0 +1,13 @@
+name = "PedigreeBase"
+uuid = "9e3bf72a-84c4-4798-98fd-c28eed5cded1"
+authors = ["Yutaka Masuda <yutaka@uga.edu>"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
