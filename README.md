@@ -1,5 +1,7 @@
 # PedigreeBase
 
+[![Build Status](https://travis-ci.org/masuday/PedigreeBase.jl.svg?branch=master)](https://travis-ci.org/masuday/PedigreeBase.jl)
+
 ## Quick start
 
 This package provides a simple set of functions to deal with a pedigree structure, inbreeding coefficients, and relationship matrices in quantitative genetics.
