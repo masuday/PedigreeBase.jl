@@ -1,6 +1,6 @@
 """
-    A = get_nrmsub(pedlist [, check=false, sorthere=true])
-    A = get_nrmsub(T, pedlist [, check=false, sorthere=true])
+    A = get_nrm(pedlist [, check=false, sorthere=true])
+    A = get_nrm(T, pedlist [, check=false, sorthere=true])
 
 Calculates the numerator (or additive) relationship matrix, so-called *A-matrix* using the recursive ("tabular") method from the pedigree list `pedlist`.
 The pedigree must be sorted as the ancestors precede their progeny unless putting `sorthere=true`.
