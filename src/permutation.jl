@@ -224,3 +224,25 @@ end
 function get_upg_range(pedlist)
    return (size(pedlist,2)+1):maximum(pedlist)
 end
+
+"""
+    perm,invp,subpedlist = subset_ped(pedlist,idlist)
+
+Creates a subset of pedigree list `pedlist` with two permutation vectors: `perm[newid]=oldid` and invp[oldid]=newid`.
+The subset includes the animals listed in `idlist` and their ancestors.
+The subset pedigree is chronologically sorted.
+
+This function is a wrapper for `find_ped_order` and `extract_ped`.
+See the functions fro details.
+"""
+function subset_ped(pedlist::Matrix{Ti},idlist::Vector{Ti}=zeros(Ti,0)) where Ti<:Integer
+   # extract pedigree
+   # perm[newid]  = origid
+   # invp[origid] = newid
+   perm,invp = find_ped_order(pedlist,idlist)
+   subpedlist = extract_ped(invp,pedlist)
+   # new pedigree
+   #n = Int(size(subpedlist,2))
+   #nupg = Int(maximum(subpedlist)) - n
+   return perm,invp,subpedlist
+end

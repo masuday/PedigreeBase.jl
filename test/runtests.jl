@@ -260,3 +260,14 @@ end
    @test Q0 ≈ Q1[rp,cp]
 end
 
+@testset "Subset pedigree" begin
+   #           1  2  3  4  5  6  7  8  9 10 11  12 13 14 15
+   pedlist = [ 0  0  0  0  0  0  2  1  2  7  7  11 11  9 11;
+               0  0  0  0  0  0  5  4  3  6  4   8 10 13 10]
+   idlist = [14]
+   perm,invp,subpedlist = subset_ped(pedlist,idlist)
+   f = get_inb(pedlist)
+   subf = get_inb(subpedlist)
+   @test all( map(x->f[perm[x]],findall(perm.>0)) .== subf )
+   @test all( map(x->subf[invp[x]],findall(invp.>0)) .== subf )
+end
