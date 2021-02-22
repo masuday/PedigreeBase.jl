@@ -135,6 +135,53 @@ function get_nrminv(pedlist::Matrix{Ti}; f::Vector{Tv}=Float64[], rank=0) where 
    return get_nrminv(pedlist,inb, rank=rank)
 end
 
+"""
+    Ainv = get_mgsnrminv(mgslist; rank=0)
+
+Computes the inverse of numerator (additive) relationship matrix using the "Henderson's" method from the pedigree list `mgslist` with sire and maternal-grandsire (MGS).
+The inbreeding will be ignored.
+See Henderson (1975) for details.
+The output is SparseMatrixCSC with Float64 while SparseMatrixDict (i.e., a hash matrix) is used as a temporary matrix.
+If you want to fix the size of A-inverse, specify `rank`.
+The function creates the inverse with either a bigger size: `rank` or the maximum ID in the pedigree.
+"""
+function get_mgsnrminv(mgslist::Matrix{Ti}, males=fill(true,size(mgslist,2)); rank=0) where {Ti<:Integer}
+   # there are UPGs if n<m
+   n::Ti = size(mgslist,2)
+   m::Ti = max(maximum(mgslist),n,rank)
+   AInv = SparseMatrixDict{Float64,Int}(m,m)
+   w::Array{Float64,1} = [1.0, -0.5, -0.25]
+   triplet = zeros(Ti,3)
+   for k=1:n
+      sid = mgslist[1,k]
+      mgsid = mgslist[2,k]
+      triplet .= [k, sid, mgsid]
+      if (sid>=1 && sid<=n) && (mgsid>=1 && mgsid<=n)
+         m = 0.0
+      elseif (sid>=1 && sid<=n)
+         m = 1.0
+      elseif (mgsid>=1 && mgsid<=n)
+         m = 4.0
+      else
+         m = 5.0
+      end
+      b = 16.0/(m + 11.0)
+      if males[k]
+         for j=1:3
+            for i=1:3
+               aj = triplet[j]
+               ai = triplet[i]
+               if ai>=1 && aj>=1
+                  val = b*w[i]*w[j]
+                  AInv[ai,aj] = AInv[ai,aj] + val
+               end
+            end
+         end
+      end
+   end
+   return sparse(AInv)
+end
+
 # change UPG code to 0
 function normalize_id_unchanged(pid,maxid)
    return pid
@@ -221,3 +268,4 @@ end
 function get_pm(pedlist::Matrix{Ti}, Tv::DataType=Float64; verbose::Bool=true) where Ti<:Integer
    return get_pm(Tv,pedlist,verbose=verbose)
 end
+

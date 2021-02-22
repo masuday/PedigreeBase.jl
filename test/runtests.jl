@@ -271,3 +271,37 @@ end
    @test all( map(x->f[perm[x]],findall(perm.>0)) .== subf )
    @test all( map(x->subf[invp[x]],findall(invp.>0)) .== subf )
 end
+
+@testset "MGS pedigree" begin
+   # Henderson (1975)
+   # for all pedigree including females
+   #           1  2 X_3 Y_4 Z_5 3_6 4_7 5_8 6_9
+   pedlist = [ 0  0  1   2   2   2   1   0   7
+               0  0  0   0   0   3   4   5   0]
+   mgslist = mgs_ped(pedlist)
+   ref_mgs = [ 0  0  1   2   2   2   1   0   7
+               0  0  0   0   0   1   2   2   0]
+   @test all(mgslist .== ref_mgs)
+
+   # for all pedigree including males only
+   #           1  2 X_3 Y_4 Z_5 3_6 4_7 5_8 6_9
+   pedlist = [ 0  0  1   2   2   2   1   0   7
+               0  0  0   0   0   3   4   5   0]
+   males =   [true, true, false, false, false, true, true, true, true]
+   mgslist = mgs_ped(pedlist, males)
+   ref_mgs = [ 0  0  0   0   0   2   1   0   7
+               0  0  0   0   0   1   2   2   0]
+   @test all(mgslist .== ref_mgs)
+
+   Ainv = get_mgsnrminv(mgslist, males)
+   idx = [1,2,6,7,8,9]
+   ref_Ainv = [
+      21.8182 5.4545  -5.4545  -10.9091    0 0
+      5.4545  22.8182 -10.9091 -5.4545  -4.0 0
+     -5.4545 -10.9091  21.8182  0        0   0
+     -10.9091 -5.4545  0        26.8182  0  -10.0
+     0        -4.0     0        0       16.0 0
+     0         0       0        -10.0   0    20.0
+   ]
+   @test isapprox(ref_Ainv,Ainv[idx,idx]*15,atol=1e-3)
+end

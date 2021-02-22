@@ -246,3 +246,29 @@ function subset_ped(pedlist::Matrix{Ti},idlist::Vector{Ti}=zeros(Ti,0)) where Ti
    #nupg = Int(maximum(subpedlist)) - n
    return perm,invp,subpedlist
 end
+
+"""
+    mgslist = mgs_ped(pedlist)
+    mgslist = mgs_ped(pedlist, males)
+
+Create a pedigree list with sire and maternal-grandsire (MGS) only.
+The returned list `mgslist` has the same dimentions as `pedlist`, but the 2nd row has the MGS code.
+The UPG code in `pedlist` will be removed.
+The Boolean vector `males` indicates male (`true`) or female (`false`); by default, all animals will be treated as male.
+"""
+function mgs_ped(pedlist, males=fill(true,size(pedlist,2)))
+   mgslist = similar(pedlist)
+   mgslist .= 0
+   n = size(pedlist,2)
+   for i=1:n
+      if males[i]
+         s = pedlist[1,i]
+         d = pedlist[2,i]
+         mgslist[1,i] = s
+         if d>=1 && d<=n
+            mgslist[2,i] = pedlist[1,d]
+         end
+      end
+   end
+   return mgslist
+end
