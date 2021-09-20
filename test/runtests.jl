@@ -133,6 +133,21 @@ end
    @test f1a ≈ f1b
 end
 
+@testset "Inb/upg code" begin
+   # reference
+   pedlist=read_ped("ped.henderson.int",integer=true)
+   s = pedlist[1,:]
+   d = pedlist[2,:]
+   f = get_inb(s,d)
+   refcode = [1000,1000,1333,2000,2000,2000,2462]
+   @test all( get_inbupg_code(s,d,f) .== refcode )
+   @test all( get_inbupg_code(pedlist,f) .== refcode )
+   n = size(s,1)
+   for i=1:n
+      @test get_inbupg_code(s[i],d[i],f) == refcode[i]
+   end
+end
+
 @testset "Inbreeding coefficients with sorting" begin
    # reference
    pedlist1,idtable1 = read_ped("ped.henderson.char")

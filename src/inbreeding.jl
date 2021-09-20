@@ -175,3 +175,49 @@ function kernel_meuwissen_and_luo!(Tv::DataType, ped::Matrix{Ti}) where Ti<:Inte
    end
    return f[1:n]
 end
+
+"""
+    c = get_inbupg_code(s, d, f)
+    c = get_inbupg_code(pedlist, f)
+
+Returns the "inb/upg code" out of sire ID `s`, dam ID `d`, and a list of inbreeding coefficient `f`.
+Instead of single ID, you can provide lists of sires and dams (unified list `pedlist` or separate lists `s` and `d`) to obtain the code for all individuals.
+The code is integer, and it is useful only for the BLUPF90 programs.
+"""
+function get_inbupg_code(s::Int,d::Int,f::Vector{Float64})
+   if s>0
+      ms = 0.0
+      fs = f[s]
+   else
+      ms = 1.0
+      fs = 0.0
+   end
+   if d>0
+      md = 0.0
+      fd = f[d]
+   else
+      md = 1.0
+      fd = 0.0
+   end
+   return Int(round( 4000/((1+ms)*(1-fs) + (1+md)*(1-fd)) ))
+end
+
+function get_inbupg_code(pedlist::Matrix{Int},f::Vector{Float64})
+   if size(pedlist,2)<size(f,1)
+      throw(DimensionMismatch("pedlist and inbreeding lists"))
+   end
+   n = size(pedlist,2)
+   code = zeros(Int,n)
+   for j=1:n
+      code[j] = get_inbupg_code(pedlist[1,j],pedlist[2,j],f)
+   end
+   return code
+end
+
+function get_inbupg_code(s::Vector{Int},d::Vector{Int},f::Vector{Float64})
+   if size(s,1)!=size(d,1) || size(s,1)<size(f,1)
+      throw(DimensionMismatch("sire, dam, and inbreeding lists"))
+   end
+   pedlist = [s'; d']
+   return get_inbupg_code(pedlist,f)
+end
