@@ -1,9 +1,11 @@
 """
     f = get_inb(pedlist [,check, sorthere, method])
+    f = get_inb(s, d [,check, sorthere, method])
     f = get_inb(Tv, pedlist [,check, sorthere, method])
 
 Computes inbreeding coefficients for animals in a pedigree list `pedlist`.
 The list is an integer matrix (2 x *n*, where *n* is the number of animals).
+Or, you can provide the lists of sires and dams (`s` and `d`, respectively).
 The results are in the vector `f` with the type `Tv` (Float64 by default).
 Unknown parent groups (UPGs) will be replaced with a missing code (`0`).
 
@@ -70,6 +72,13 @@ end
 # default = Float64
 function get_inb(pedlist::Matrix{Ti}, Tv::DataType=Float64;
                  check=false, sorthere=false, method::String="MeuwissenAndLuo") where Ti<:Integer
+   return get_inb(Tv, pedlist, check=check, sorthere=sorthere, method=method)
+end
+
+# pedigree as vectors
+function get_inb(s::Vector{Ti}, d::Vector{Ti}, Tv::DataType=Float64;
+                 check=false, sorthere=false, method::String="MeuwissenAndLuo") where Ti<:Integer
+   pedlist = [s'; d']
    return get_inb(Tv, pedlist, check=check, sorthere=sorthere, method=method)
 end
 

@@ -116,13 +116,21 @@ end
    perm,invp = find_ped_order(pedlist2)
    permute_ped!(invp,pedlist2,idtable2)
    f2 = get_inb(pedlist2, check=true)
-   @test f1==f2
+   @test f1 ≈ f2
    # reordered data
    pedlist3,idtable3 = read_ped("ped.henderson.char.3")
    perm,invp = find_ped_order(pedlist3)
    permute_ped!(invp,pedlist3,idtable3)
    f3 = get_inb(pedlist3, check=true)
-   @test f1==f3
+   @test f1 ≈ f3
+
+   # integer case
+   pedlist=read_ped("ped.henderson.int",integer=true)
+   s = pedlist[1,:]
+   d = pedlist[2,:]
+   f1a = get_inb(s,d)
+   f1b = get_inb(pedlist)
+   @test f1a ≈ f1b
 end
 
 @testset "Inbreeding coefficients with sorting" begin
