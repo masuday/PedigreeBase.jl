@@ -169,7 +169,7 @@ end
    n = size(A1,1)
    p1,ip1 = sort_by_dict(idtable1,n)
    A1 = A1[p1,p1]
-   @test f1==diag(A1) .- 1.0
+   @test f1 ≈ diag(A1) .- 1.0
    # shuffled data
    pedlist2,idtable2 = read_ped("ped.henderson.char.2",order=vec([2 4 5]))
    perm,invp = find_ped_order(pedlist2)
@@ -177,7 +177,7 @@ end
    A2 = get_nrm(pedlist2)
    p2,ip2 = sort_by_dict(idtable2,n)
    A2 = A2[p2,p2]
-   @test A1==A2
+   @test A1 ≈ A2
    # shuffled with UPGs
    pedlist3,idtable3 = read_ped("ped.henderson.char.4")
    upgtable3 = Dict("x"=>1,"y"=>2)
@@ -187,7 +187,7 @@ end
    A3 = get_nrm(pedlist3)
    p3,ip3 = sort_by_dict(idtable3,n)
    A3 = A3[p3,p3]
-   @test A1==A3
+   @test A1 ≈ A3
 end
 
 @testset "A-inverse" begin
