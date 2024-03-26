@@ -1,7 +1,7 @@
 name = "PedigreeBase"
 uuid = "9e3bf72a-84c4-4798-98fd-c28eed5cded1"
 authors = ["Yutaka Masuda"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -11,7 +11,7 @@ SparseMatrixDicts = "5cb6c4b0-9b79-11e8-24c9-f9621d252589"
 
 [compat]
 OffsetArrays = "^1"
-SparseMatrixDicts = "^0.2"
+SparseMatrixDicts = "^0.3"
 julia = "1"
 
 [extras]
